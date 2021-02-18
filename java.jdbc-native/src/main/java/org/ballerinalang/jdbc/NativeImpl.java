@@ -21,7 +21,7 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.sql.datasource.SQLDatasource;
-import org.ballerinalang.sql.utils.ClientUtils;
+import org.ballerinalang.sql.nativeimpl.ClientProcessor;
 import org.ballerinalang.sql.utils.ErrorGenerator;
 
 import java.util.Locale;
@@ -72,7 +72,7 @@ public class NativeImpl {
                 .setOptions(properties)
                 .setPoolProperties(poolProperties)
                 .setConnectionPool(connectionPool, globalPool);
-        return ClientUtils.createClient(client, sqlDatasourceParams);
+        return ClientProcessor.createClient(client, sqlDatasourceParams);
     }
 
     // Unable to perform a complete validation since URL differs based on the database.
@@ -81,6 +81,6 @@ public class NativeImpl {
     }
 
     public static Object close(BObject client) {
-        return ClientUtils.close(client);
+        return ClientProcessor.close(client);
     }
 }
