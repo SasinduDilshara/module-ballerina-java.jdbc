@@ -17,15 +17,14 @@
  */
 package org.ballerinalang.jdbc;
 
+import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import org.ballerinalang.sql.datasource.SQLDatasource;
 import org.ballerinalang.sql.nativeimpl.ClientProcessor;
 import org.ballerinalang.sql.utils.ErrorGenerator;
 
 import java.util.Locale;
-import java.util.Properties;
 
 /**
  * This class will include the native method implementation for the JDBC client.
@@ -36,43 +35,47 @@ public class NativeImpl {
 
     public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
                                       BMap<BString, Object> globalPool) {
-        String url = clientConfig.getStringValue(Constants.ClientConfiguration.URL).getValue();
-        if (!isJdbcUrlValid(url)) {
+        BMap<BString, Object> connectionParameters = ValueCreator.createMapValue();
+        BString url = clientConfig.getStringValue(Constants.ClientConfiguration.URL);
+        if (!isJdbcUrlValid(url.getValue())) {
             return ErrorGenerator.getSQLApplicationError("Invalid JDBC URL: " + url);
         }
-        BString userVal = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
-        String user = userVal == null ? null : userVal.getValue();
-        BString passwordVal = clientConfig.getStringValue(Constants.ClientConfiguration.PASSWORD);
-        String password = passwordVal == null ? null : passwordVal.getValue();
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.URL, url);
+        BString user = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.USER, user);
+        BString password = clientConfig.getStringValue(Constants.ClientConfiguration.PASSWORD);
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.PASSWORD, password);
         BMap options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
         BMap properties = null;
-        String datasourceName = null;
-        Properties poolProperties = null;
+        BString datasourceName = null;
+        BMap<BString, Object> poolProperties = null;
         if (options != null) {
             properties = options.getMapValue(Constants.ClientConfiguration.PROPERTIES);
-            BString dataSourceNamVal = options.getStringValue(Constants.ClientConfiguration.DATASOURCE_NAME);
-            datasourceName = dataSourceNamVal == null ? null : dataSourceNamVal.getValue();
+            System.out.println("properties: "+properties+"\n");
+            datasourceName = options.getStringValue(Constants.ClientConfiguration.DATASOURCE_NAME);
+            System.out.println("datasourceName: "+datasourceName+"\n");
             if (properties != null) {
+                System.out.println();
                 for (Object propKey : properties.getKeys()) {
                     if (propKey.toString().toLowerCase(Locale.ENGLISH).matches(Constants.CONNECT_TIMEOUT)) {
-                        poolProperties = new Properties();
-                        poolProperties.setProperty(Constants.POOL_CONNECTION_TIMEOUT,
-                                                   properties.getStringValue((BString) propKey).getValue());
+                        System.out.println("propKey: "+propKey+"\n");
+                        poolProperties = ValueCreator.createMapValue();
+                        System.out.println("poolProperties: "+poolProperties);
+                        poolProperties.put(Constants.POOL_CONNECTION_TIMEOUT,
+                                                   properties.getStringValue((BString) propKey));
+                        System.out.println("poolProperties: "+poolProperties);
                     }
                 }
             }
         }
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.DATASOURCE_NAME, datasourceName);
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.OPTIONS, options);
         BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
-
-        SQLDatasource.SQLDatasourceParams sqlDatasourceParams = new SQLDatasource.SQLDatasourceParams()
-                .setUrl(url)
-                .setUser(user)
-                .setPassword(password)
-                .setDatasourceName(datasourceName)
-                .setOptions(properties)
-                .setPoolProperties(poolProperties)
-                .setConnectionPool(connectionPool, globalPool);
-        return ClientProcessor.createClient(client, sqlDatasourceParams);
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.CONNECTION_POOL, connectionPool);
+        connectionParameters.put(org.ballerinalang.sql.Constants.SQLParamsFields.CONNECTION_POOL_OPTIONS,
+                        poolProperties);
+        
+        return ClientProcessor.createSqlClient(client, connectionParameters, globalPool);
     }
 
     // Unable to perform a complete validation since URL differs based on the database.
