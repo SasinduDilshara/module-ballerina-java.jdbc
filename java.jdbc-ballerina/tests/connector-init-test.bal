@@ -15,6 +15,7 @@
 
 import ballerina/sql;
 import ballerina/test;
+import ballerina/io;
 
 string jdbcUrl = "jdbc:h2:" + dbPath + "/" + "CONNECT_DB";
 
@@ -93,11 +94,14 @@ function testConnectionWithInvalidDriver() {
     groups: ["connection"]
 }
 function testConnectionWithDatasourceOptions() {
+    io:println("\n\n\nStart Error\n\n\n");
     Options options = {
         datasourceName: "org.h2.jdbcx.JdbcDataSource",
         properties: {"loginTimeout": 5000}
     };
+    
     Client|sql:Error dbClient = new (jdbcUrl, user, password, options);
+    io:println("\n\n\nEnd error\n\n\n");
     if (dbClient is sql:Error) {
         test:assertFail("Datasource options throws DatabaseError");
     } else {
