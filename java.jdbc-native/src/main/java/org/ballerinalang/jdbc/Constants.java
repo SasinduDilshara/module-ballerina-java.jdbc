@@ -41,5 +41,5 @@ public final class Constants {
     }
 
     public static final String CONNECT_TIMEOUT = ".*(connect).*(timeout).*";
-    public static final String POOL_CONNECTION_TIMEOUT = "ConnectionTimeout";
+    public static final BString POOL_CONNECTION_TIMEOUT = StringUtils.fromString("ConnectionTimeout");
 }
