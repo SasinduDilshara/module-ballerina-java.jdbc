@@ -18,13 +18,16 @@
 
 package org.ballerinalang.jdbc.nativeimpl;
 
-import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
-
 import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
 import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
+/**
+ * This class provides the query processing implementation which executes sql queries.
+ * 
+ * @since 0.6.0
+ */
 public class QueryProcessor {
 
     private QueryProcessor() {

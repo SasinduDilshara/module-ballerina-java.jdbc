@@ -20,9 +20,13 @@ package org.ballerinalang.jdbc.nativeimpl;
 
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
-
 import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
+/**
+ * This class contains methods for executing SQL queries.
+ *
+ * @since 0.6.0
+ */
 public class ExecuteProcessor {
     private ExecuteProcessor() {
     }

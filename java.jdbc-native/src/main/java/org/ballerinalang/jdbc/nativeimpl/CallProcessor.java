@@ -23,6 +23,11 @@ import io.ballerina.runtime.api.values.BObject;
 import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
 import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
+/**
+ * This class holds the utility methods involved with executing the call statements.
+ *
+ * @since 0.6.0
+ */
 public class CallProcessor { 
     private CallProcessor() { 
     }

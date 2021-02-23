@@ -30,7 +30,7 @@ import java.util.Properties;
 /**
  * This class will include the native method implementation for the JDBC client.
  *
- * @since 1.2.0
+ * @since 0.6.0
  */
 public class ClientProcessor {
 
