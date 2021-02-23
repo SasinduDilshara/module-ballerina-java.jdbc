@@ -151,22 +151,22 @@ function createClient(Client jdbcClient, ClientConfiguration clientConf,
 
 function nativeQuery(Client sqlClient, string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType)
 returns stream <record {}, sql:Error> = @java:Method {
-    'class: "org.ballerinalang.sql.nativeimpl.QueryProcessor"
+    'class: "org.ballerinalang.jdbc.nativeimpl.QueryProcessor"
 } external;
 
 function nativeExecute(Client sqlClient, string|sql:ParameterizedQuery sqlQuery)
 returns sql:ExecutionResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.nativeimpl.ExecuteProcessor"
+    'class: "org.ballerinalang.jdbc.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
 returns sql:ExecutionResult[]|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.nativeimpl.ExecuteProcessor"
+    'class: "org.ballerinalang.jdbc.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeCall(Client sqlClient, string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes)
 returns sql:ProcedureCallResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.nativeimpl.CallProcessor"
+    'class: "org.ballerinalang.jdbc.nativeimpl.CallProcessor"
 } external;
 
 function close(Client jdbcClient) returns sql:Error? = @java:Method {
