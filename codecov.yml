@@ -2,7 +2,7 @@ codecov:
   require_ci_to_pass: no
 
 fixes:
-  - "ballerinax/java.jdbc/*/::java.jdbc-ballerina/"
+  - "ballerinax/java$0046jdbc/*/::java$0046jdbc-ballerina/"
 
 ignore:
   - "**/tests"
